@@ -1,0 +1,195 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Client {
+  id                     String           @id @default(auto()) @map("_id") @db.ObjectId
+  clientWebsite          String?          @map("client_website")
+  clientName             String           @map("client_name")
+  streetAddress          String           @map("street_address")
+  businessPhoneNumber    String?          @map("business_phone_number")
+  googleMyBusinessLink   String?          @map("google_my_business_link")
+  businessInformation    String?          @map("business_information")
+  serviceMenu            String?          @map("service_menu")
+  openingHours           String?          @map("opening_hours")
+  state                  String
+  postalCode             String           @map("postal_code")
+  referralSource         String?          @map("referral_source")
+  callHistory            Call[]
+  phoneConfigs           PhoneConfig[]
+  industry               String?
+  clientActivity         ClientActivity?
+  accountId              String           @unique @map("account_id")
+  createdAt              DateTime         @default(now()) @map("created_at")
+  updatedAt              DateTime         @updatedAt @map("updated_at")
+  clientBusinesses       ClientBusiness[]
+  subscription           Subscription?
+  clientRequests         ClientRequest[]
+}
+
+model Voice {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  sampleLink   String        @map("sample_link")
+  name         String
+  provider     String
+  providerName String        @map("provider_name")
+  phoneConfigs PhoneConfig[]
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+}
+
+model PhoneNumber {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  available    Boolean       @default(true)
+  provider     String
+  number       String        @unique
+  country      String
+  capabilities String[]
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  phoneConfigs PhoneConfig[]
+}
+
+type Message {
+  id        String   @db.ObjectId
+  role      String
+  timeAdded DateTime @map("time_added")
+  content   String
+}
+
+model Call {
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  callId           String    @map("call_id")
+  startTime        DateTime  @map("start_time")
+  endTime          DateTime  @map("end_time")
+  duration         Int
+  status           String?
+  recordingLink    String?   @map("recording_link")
+  conversationData Message[] @map("conversation_data")
+  client           Client    @relation(fields: [clientId], references: [id])
+  clientId         String    @map("client_id") @db.ObjectId
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+}
+
+model PhoneConfig {
+  id                 String        @id @default(auto()) @map("_id") @db.ObjectId
+  isActive           Boolean       @map("is_active")
+  prompt             String?
+  onlyForwardCallsDuringBusinessHours Boolean? @map("only_forward_calls_during_business_hours")
+  callForwardingNumber   String?          @map("call_forwarding_number")
+  blockScamAndSalesCalls Boolean?         @default(false) @map("block_scam_and_sales_calls")
+  faqs               Faqs[]
+  integrations       Integration[]
+  voice              Voice?        @relation(fields: [voiceId], references: [id])
+  pricingPageLink    String?       @map("pricing_page_link")
+  clientId           String        @map("client_id") @db.ObjectId
+  voiceId            String        @map("voice_id") @db.ObjectId
+  greetingMessage    String?       @map("greeting_message")
+  llm                Llm?          @relation(fields: [llmId], references: [id])
+  llmId              String?       @default("657cde608cdf01c92c0d4408") @map("llm_id") @db.ObjectId
+  phoneNumber        PhoneNumber   @relation(fields: [phoneNumberId], references: [id])
+  phoneNumberId      String        @map("phone_number_id") @db.ObjectId
+  createdAt          DateTime      @default(now()) @map("created_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+  client             Client        @relation(fields: [clientId], references: [id])
+  phoneConfigVersion String?       @default("PhoneConfigDec2023") @map("phone_config_version")
+}
+
+model Faqs {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  phoneConfig   PhoneConfig @relation(fields: [phoneConfigId], references: [id])
+  phoneConfigId String      @map("phone_config_id") @db.ObjectId
+  question      String
+  answer        String
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+}
+
+model Integration {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  logo          String?
+  description   String
+  authData      Json        @map("auth_data")
+  phoneConfig   PhoneConfig @relation(fields: [phoneConfigId], references: [id])
+  phoneConfigId String      @db.ObjectId
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+}
+
+model ClientActivity {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  client    Client   @relation(fields: [clientId], references: [id])
+  clientId  String   @unique @map("client_id") @db.ObjectId
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Function {
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  json                Json
+  name                String
+  description         String
+  libraryRequirements Json     @map("library_requirements")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+}
+
+model Llm {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  provider    String
+  name        String
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  PhoneConfig PhoneConfig[]
+}
+
+model Campaign {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  campaignClientId String   @map("campaign_client_id") @db.ObjectId
+  businessId       String   @map("business_id")
+  businessName     String   @map("business_name")
+  businessEmail    String?  @map("business_email")
+  greetingMessage  String   @map("greeting_message")
+  prompt           String   @map("prompt")
+  phoneNumber      String?  @map("phone_number")
+  campaignVersion  String   @default("MailCampaignDec2023") @map("campaign_version")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+}
+
+model ClientBusiness {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  client      Client   @relation(fields: [clientId], references: [id])
+  clientId    String   @map("client_id") @db.ObjectId
+  gmbData     Json?    @map("gmb_data")
+  websiteData Json?    @map("website_data")
+  status      String   @default("queued")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+}
+
+model Subscription {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  clientId              String   @unique @map("client_id") @db.ObjectId
+  client                Client   @relation(fields: [clientId], references: [id])
+  status                String   @default("active")
+  type                  String   @default("credit")
+  callsRemaining        Int      @default(5) @map("calls_remaining")
+  subscriptionStartTime DateTime @map("subscription_start_time")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+}
+
+model ClientRequest {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  Client   Client @relation(fields: [clientId], references: [id])
+  clientId String @db.ObjectId
+  message  String
+}

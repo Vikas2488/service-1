@@ -1,0 +1,133 @@
+[
+  {
+    "id": "657ce4ef8cdf01c92c0d4412",
+    "json": {
+      "name": "send_warranty_details",
+      "description": "Send warranty details webpage link via SMS.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "Roadside assistance phone number."
+          },
+          "webpage": {
+            "type": "string",
+            "description": "Roadside assistance information webpage link."
+          }
+        },
+        "required": ["phone", "webpage"]
+      }
+    },
+    "name": "Send Warranty Details",
+    "description": "Send warranty details webpage link via SMS.",
+    "libraryRequirements": ["twilio"],
+    "createdAt": "2023-12-19T22:48:59.382Z",
+    "updatedAt": "2023-12-19T22:48:59.382Z"
+  },
+  {
+    "id": "657ce66e8cdf01c92c0d4414",
+    "json": {
+      "name": "send_roadside_assist_details",
+      "description": "Send roadside assist details via SMS.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "Roadside assistance phone number."
+          },
+          "webpage": {
+            "type": "string",
+            "description": "Roadside assistance information webpage link."
+          }
+        },
+        "required": ["phone", "webpage"]
+      }
+    },
+    "name": "Send Roadside Assist Details",
+    "description": "Send roadside assist details via SMS.",
+    "libraryRequirements": ["twilio"],
+    "createdAt": "2023-12-19T22:48:59.382Z",
+    "updatedAt": "2023-12-19T22:48:59.382Z"
+  },
+  {
+    "id": "657ce6a48cdf01c92c0d4416",
+    "json": {
+      "name": "send_booking_link_sms",
+      "description": "Send the booking link by sms.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "link_identifier": {
+            "type": "string",
+            "description": "Proxy identifier for booking link to send."
+          }
+        },
+        "required": ["link"]
+      }
+    },
+    "name": "Send Booking Link SMS",
+    "description": "Send the booking link by sms.",
+    "libraryRequirements": ["twilio"],
+    "createdAt": "2023-12-19T22:48:59.382Z",
+    "updatedAt": "2023-12-19T22:48:59.382Z"
+  },
+  {
+    "id": "657ce6e48cdf01c92c0d4418",
+    "json": {
+      "name": "forward_call_to_agent",
+      "description": "Forward call to service agent to handle.",
+      "parameters": { "type": "object", "properties": {} }
+    },
+    "name": "Forward Call",
+    "description": "For the call to service agents to handle.",
+    "libraryRequirements": [],
+    "createdAt": "2023-12-19T22:48:59.382Z",
+    "updatedAt": "2023-12-19T22:48:59.382Z"
+  },
+  {
+    "id": "657ce7378cdf01c92c0d441a",
+    "json": {
+      "name": "send_booking_details_to_agent",
+      "description": "Send booking details collected to service agents to handle.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Properly formatted email of user."
+          },
+          "phone": { "type": "string", "description": "Phone number of user." },
+          "service_type": {
+            "type": "string",
+            "description": "Service type user has chosen."
+          },
+          "registration_number": {
+            "type": "string",
+            "description": "Registration number of user's vehicle."
+          }
+        },
+        "required": ["email", "phone", "service_type", "registration_number"]
+      }
+    },
+    "name": "Send Booking Details to Agent",
+    "description": "Send booking details collected to service agents to handle.",
+    "libraryRequirements": [],
+    "createdAt": "2023-12-19T22:48:59.382Z",
+    "updatedAt": "2023-12-19T22:48:59.382Z"
+  },
+  {
+    "id": "6583f5ce3d5fe3c100274716",
+    "json": {
+      "name": "end_call",
+      "description": "Terminate the call.",
+      "parameters": { "type": "object", "properties": {} }
+    },
+    "name": "End Call",
+    "description": "End the call.",
+    "libraryRequirements": ["twilio"],
+    "createdAt": "2023-12-19T22:48:59.382Z",
+    "updatedAt": "2023-12-19T22:48:59.382Z"
+  }
+]

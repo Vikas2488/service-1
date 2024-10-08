@@ -1,0 +1,40 @@
+name: Deploy 5 Services to ECR
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to main branch (modify if using a different branch)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ ASIAQLSIVU3RK7N5NY2W }}
+        aws-secret-access-key: ${{ ENMewUCBMeNoNBY0oLJgQXMsptTh3fWClYFDYkeK }}
+        aws-region: us-west-1  # Change this to your region
+
+    - name: Log in to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+      # Step 4: Build, tag, and push Docker image to ECR
+    - name: Build and push Docker image to ECR
+      run: |
+         # Replace <ecr_repo_url> with your actual ECR URL for this service
+          ecr_repo_url=123456789012.dkr.ecr.us-east-1.amazonaws.com/<repository-name>
+
+          # Build Docker image for ARM64 architecture
+          docker build --platform linux/arm64 -t <service-name> -f ./Dockerfile .
+
+          # Tag the image with the ECR repository URL
+          docker tag <service-name>:latest $ecr_repo_url:latest
+
+          # Push the image to ECR
+          docker push $ecr_repo_url:latest

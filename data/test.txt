@@ -1,0 +1,10 @@
+Fetch user data (clerk) -> 150-200ms
+Get client data, phone config, subscription data (zapi) -> 1000-1300ms
+Get Overview data (Zapi) -> 600-800ms
+----------------------------------------------------
+blank page - 0-500ms
+sign in loading - 500-1000ms
+overview page with skeleton -1100-2000ms
+final content - 2000ms
+
++- 200 ms in each step
