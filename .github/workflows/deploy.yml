@@ -18,6 +18,8 @@ jobs:
 
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
+        with:
+          region: us-west-1  # Specify the region
 
       - name: Build and Push to ECR
         run: |
