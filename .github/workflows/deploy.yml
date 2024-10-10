@@ -67,15 +67,19 @@ jobs:
           # Install Helm
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
-      # Step 10: Deploy the application using Helm
+      # Step 10: Deploy the application using Helm with ECR Image URL
       - name: Helm Deploy to Kubernetes
         run: |
           # Define your ECR repository URL
           ECR_REPO_URL=024848475874.dkr.ecr.us-west-1.amazonaws.com/database-apis
 
+          # Get the latest image digest from ECR
+          IMAGE_URL=$(aws ecr describe-images --repository-name database-apis \
+            --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]' --output text)
+
           # Update the Helm chart with the latest image
           helm upgrade --install database-apis ./helm-chart \
             --set image.repository=$ECR_REPO_URL \
-            --set image.tag=latest \
+            --set image.tag=$IMAGE_URL \
             --namespace development \
             --create-namespace
