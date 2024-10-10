@@ -77,7 +77,7 @@ jobs:
           IMAGE_URL=$(aws ecr describe-images --repository-name database-apis \
             --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]' --output text)
 
-          # Update the Helm chart with the latest image
+          # Update the Helm chart with the latest image (ensure path to Helm chart is correct)
           helm upgrade --install database-apis ./helm-chart \
             --set image.repository=$ECR_REPO_URL \
             --set image.tag=$IMAGE_URL \
