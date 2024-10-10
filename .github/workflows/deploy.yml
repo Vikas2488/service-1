@@ -1,4 +1,4 @@
-name: Build and Deploy to ECR
+name: Build, Push to ECR, and Deploy with Helm
 
 on:
   push:
@@ -48,3 +48,23 @@ jobs:
       # Step 6: Logout from Amazon ECR
       - name: Logout from Amazon ECR
         run: docker logout 024848475874.dkr.ecr.us-west-1.amazonaws.com
+
+      # Step 7: Set up Helm for deployment
+      - name: Set up Helm
+        run: |
+          # Install Helm
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+      # Step 8: Deploy the application using Helm
+      - name: Helm Deploy to Kubernetes
+        run: |
+          # Define your ECR repository URL
+          ECR_REPO_URL=024848475874.dkr.ecr.us-west-1.amazonaws.com/database-apis
+
+          # Update the Helm chart with the latest image
+          helm upgrade --install database-apis ./helm-chart \
+            --set image.repository=$ECR_REPO_URL \
+            --set image.tag=latest \
+            --namespace development \
+            --create-namespace
+
