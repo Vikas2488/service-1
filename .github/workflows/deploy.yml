@@ -59,7 +59,7 @@ jobs:
       # Step 8: Update kubeconfig for EKS cluster
       - name: Update kubeconfig for EKS
         run: |
-          aws eks update-kubeconfig --region us-west-1 --name <YOUR-EKS-CLUSTER-NAME>
+          aws eks update-kubeconfig --region us-west-1 --name aguken-ai
 
       # Step 9: Set up Helm for deployment
       - name: Set up Helm
