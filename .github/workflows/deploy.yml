@@ -49,13 +49,25 @@ jobs:
       - name: Logout from Amazon ECR
         run: docker logout 024848475874.dkr.ecr.us-west-1.amazonaws.com
 
-      # Step 7: Set up Helm for deployment
+      # Step 7: Install kubectl
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x ./kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
+
+      # Step 8: Update kubeconfig for EKS cluster
+      - name: Update kubeconfig for EKS
+        run: |
+          aws eks update-kubeconfig --region us-west-1 --name <YOUR-EKS-CLUSTER-NAME>
+
+      # Step 9: Set up Helm for deployment
       - name: Set up Helm
         run: |
           # Install Helm
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
-      # Step 8: Deploy the application using Helm
+      # Step 10: Deploy the application using Helm
       - name: Helm Deploy to Kubernetes
         run: |
           # Define your ECR repository URL
@@ -67,4 +79,3 @@ jobs:
             --set image.tag=latest \
             --namespace development \
             --create-namespace
-
