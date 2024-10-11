@@ -1,4 +1,4 @@
-name: Build and Deploy to ECR
+name: Build and Deploy to ECR and Helm
 
 on:
   push:
@@ -14,37 +14,40 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Set up Docker Buildx for multi-platform builds (if needed)
+      # Step 2: Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      # Step 3: Configure AWS credentials using GitHub secrets
+      # Step 3: Configure AWS credentials
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-1  # Change this to your desired AWS region
+          aws-region: us-west-1
 
       # Step 4: Log in to Amazon ECR
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
-      # Step 5: Build and push Docker image to ECR with 'latest' tag
+      # Step 5: Build and push Docker image to ECR
       - name: Build and Push to ECR
         run: |
-          # Define your ECR repository URL
           ECR_REPO_URL=024848475874.dkr.ecr.us-west-1.amazonaws.com/database-apis
-
-          # Build the Docker image
           docker build -t database-apis .
-
-          # Tag the image with the 'latest' tag
           docker tag database-apis:latest $ECR_REPO_URL:latest
-
-          # Push the image to ECR with the 'latest' tag
           docker push $ECR_REPO_URL:latest
 
-      # Step 6: Logout from Amazon ECR
-      - name: Logout from Amazon ECR
-        run: docker logout 024848475874.dkr.ecr.us-west-1.amazonaws.com
+      # Step 6: Deploy to Kubernetes using Helm
+      - name: Helm Deploy to Kubernetes
+        run: |
+          ECR_REPO_URL=024848475874.dkr.ecr.us-west-1.amazonaws.com/database-apis
+          IMAGE_TAG="latest"  # Set the image tag to 'latest'
+          echo "Deploying image with tag: $IMAGE_TAG"
+          
+          # Use the correct path to your Helm chart here
+          helm upgrade --install database-apis ./helm-chart \
+            --set image.repository=$ECR_REPO_URL \
+            --set image.tag=$IMAGE_TAG \
+            --namespace development \
+            --create-namespace
