@@ -38,7 +38,12 @@ jobs:
           docker tag database-apis:latest $ECR_REPO_URL:latest
           docker push $ECR_REPO_URL:latest
 
-      # Step 6: Deploy to Kubernetes using Helm
+      # Step 6: Configure kubectl
+      - name: Set up kubectl
+        run: |
+          aws eks update-kubeconfig --name aguken-ai --region us-west-1
+
+      # Step 7: Deploy to Kubernetes using Helm
       - name: Helm Deploy to Kubernetes
         run: |
           ECR_REPO_URL=024848475874.dkr.ecr.us-west-1.amazonaws.com/database-apis
