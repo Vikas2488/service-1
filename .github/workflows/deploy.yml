@@ -55,7 +55,7 @@ jobs:
           
           
           # Use the correct path to your Helm chart here
-          helm upgrade --install database-apis ./helm-chart \
+          helm upgrade --install database-apis ./database-apis \
             --set image.repository=$ECR_REPO_URL \
             --set image.tag=$IMAGE_TAG \
             --namespace development \
