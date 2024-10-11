@@ -42,6 +42,7 @@ jobs:
       - name: Set up kubectl
         run: |
           aws eks update-kubeconfig --name aguken-ai --region us-west-1
+          ls
 
       # Step 7: Deploy to Kubernetes using Helm
       - name: Helm Deploy to Kubernetes
@@ -49,6 +50,9 @@ jobs:
           ECR_REPO_URL=024848475874.dkr.ecr.us-west-1.amazonaws.com/database-apis
           IMAGE_TAG="latest"  # Set the image tag to 'latest'
           echo "Deploying image with tag: $IMAGE_TAG"
+          pwd
+          ls
+          
           
           # Use the correct path to your Helm chart here
           helm upgrade --install database-apis ./helm-chart \
@@ -56,3 +60,5 @@ jobs:
             --set image.tag=$IMAGE_TAG \
             --namespace development \
             --create-namespace
+            cat .gitmodules
+
